@@ -23,22 +23,46 @@ static void prompt(FILE *pfp, FILE *ifp)
  * Actually do the work
  */
 
-void delete_element(char ** tokens, int nTokens)
+void print(char** tokens)
 {
-    int i = 0;
-    for (i = 0; i < nTokens -1; i++)
+    for(int i = 0; tokens[i] != NULL; i++)
     {
-        //tokens[i] = realloc(sizeof(char*), strlen(tokens[i+1]));
-        strncpy(tokens[i], tokens[i+1], strlen(tokens[i+1]));
-        printf("new %s\n", tokens[i]);
+        printf("{%s} ", tokens[i]);
     }
-    tokens[i] = NULL;
-    for (int j = 0; j < i; j++)
-    {
-        printf("erased: %s\n", tokens[j]);
-    }
+    printf("\n");
+}
 
-    //tokens[i] = NULL;
+char ** parse_command(char**tokens, int nTokens, int curr_cmd_num)
+{
+    int cmd_cnt = 0, idx = 0;
+    char** parsed_cmd = calloc(sizeof(*parsed_cmd), 18);
+    for (int i = 0; i < nTokens; i++)
+    {
+        if (strncmp(tokens[i], "|", strlen(tokens[i])) != 0)
+        {
+            parsed_cmd[idx] = calloc(sizeof(char), strlen(tokens[i]));
+            strncpy(parsed_cmd[idx], tokens[i], strlen(tokens[i]));
+            idx++;
+            parsed_cmd[idx] = calloc(100, sizeof(char));
+            parsed_cmd[idx] = NULL;
+        }
+        else if (strncmp(tokens[i], "|", strlen(tokens[i])) == 0 || tokens[i+1] == NULL)
+        {
+            cmd_cnt++;
+            if (cmd_cnt == curr_cmd_num)
+            {
+                break;
+            }else{
+                for(int j = 0; j < idx; j++)
+                {
+                    free(parsed_cmd[j]);
+                }
+                idx = 0;
+            }
+        }
+
+    }
+    return parsed_cmd;
 }
 
 int count_pipe(char ** tokens, int nTokens)
@@ -53,7 +77,6 @@ int count_pipe(char ** tokens, int nTokens)
     }
     return pipes;
 }
-int current = 0;
 int execFullCommandLine(
 		FILE *ofp,
 		char ** const tokens,
@@ -64,42 +87,50 @@ int execFullCommandLine(
 		fprintf(stderr, " + ");
 		fprintfTokens(stderr, tokens, 1);
 	}
-
-    int nPipes = count_pipe(tokens, nTokens);
-    int pipefds[2*nPipes];
-    for (int i = 0; i < nPipes; i++)
+    printf("command : ");
+	print(tokens);
+    if (strcmp(tokens[0], "exit") == 0){
+        exit(0);
+    }
+    if (strcmp(tokens[0], "pwd") == 0)
     {
-        if (pipe(pipefds + i*2) < 0)
+        char * pwd = calloc(sizeof(char), 200);
+        if (getcwd(pwd, 200) == NULL)
         {
-            perror("pipe"); exit(1);
+            perror("pwd error");
+        }else{
+            printf("%s\n", pwd);
         }
     }
-    int num_cmd = 0;
-    char **parse= calloc(10000, sizeof(char*));
-    int idx = 0, command = 0, j = 0;
-    while(current < nTokens) {
-        if (strncmp(tokens[current], "|", strlen(tokens[current])) != 0) {
-            parse[idx] = calloc(strlen(tokens[current]) + 10, sizeof(char));
-            strcpy(parse[idx], tokens[current]);
-            printf("|%s| ", parse[idx]);
-            current++;
-            printf("\n");
-            parse[current] = calloc(100, sizeof(char));
-            parse[idx] = NULL;
-        }else{
-            int pid = fork();
-            if (pid == 0)
+    if (strcmp(tokens[0], "cd") == 0)
+    {
+        chdir(getenv("HOME"));
+
+    }else{
+        int nPipes = count_pipe(tokens, nTokens);
+        int pipefds[2*nPipes];
+        for (int i = 0; i < nPipes; i++)
+        {
+            if (pipe(pipefds + i*2) < 0)
             {
-                if (command > 0)
+                perror("pipe"); exit(1);
+            }
+        }
+        int idx = 0, j = 0, current = 0;
+        while(current < nPipes+1) {
+            char ** command = parse_command(tokens, nTokens, current+1);
+            print(command);
+            int pid = fork();
+            if (pid == 0){
+                if (current > 0)
                 {
                     //not first command
                     if (dup2(pipefds[j -2], 0) < 0)
                     {
                         perror("dup2"); exit(1);
                     }
-
                 }
-                if (command < nPipes-1)
+                if (current < nPipes-1)
                 {
                     //not last command
                     if (dup2(pipefds[j +1],1) < 0)
@@ -111,7 +142,7 @@ int execFullCommandLine(
                 {
                     close(pipefds[i]);
                 }
-                if (execvp(parse[0], parse) < 0)
+                if (execvp(command[0], command) < 0)
                 {
                     perror("execvp"); exit(1);
                 }
@@ -120,113 +151,26 @@ int execFullCommandLine(
                 perror("error");
                 exit(1);
             }
-            for (int i = 0; i < idx; i++){
-                free(parse[i]);
+            for (int i = 0; command[i] != NULL; i++){
+                free(command[i]);
             }
-            j +=2;command++;
+            j +=2;
+            current++;
         }
-        current++; idx++;
-    }
-    for (int i = 0; i < nPipes *2; i++)
-    {
-        close(pipefds[i]);
-    }
-    for (int i = 0; i < nPipes; i++)
-    {
-        wait(NULL);
+
+        for (int i = 0; i < nPipes *2; i++)
+        {
+            close(pipefds[i]);
+        }
+        for (int i = 0; i < nPipes; i++)
+        {
+            wait(NULL);
+        }
     }
 
-
-    /*
-        char ** parsedTokens = NULL;
-        if(nPipes > 0) {
-            parsedTokens = malloc(sizeof(char*) * (nTokens - nPipes));
-            int i = 0;
-            int j = 0;
-            int pipeToken = 1;
-            while(i < nTokens) {
-                //printf("Token[%d] = %s\n", i, tokens[i]);
-                if(strcmp(tokens[i], "|") != 0) {
-                    parsedTokens[j] = malloc(sizeof(char) * strlen(tokens[i] + 1));
-                    strcpy(parsedTokens[j], tokens[i]);
-                    parsedTokens[j][strlen(parsedTokens[j])] = '\0';
-                    j++;
-                }
-                i++;
-            }
-            for(int i=0;i<(nTokens - nPipes); i++) {
-                printf("%s \n", parsedTokens[i]);
-            }
-            printf("\n");
-        }*/
 
 /*
-    int status, child_exit_pid, current = 0, idx = 0;
-    char **parse= calloc(10000, sizeof(char*));
-    while(current < nTokens) {
-        if (strncmp(tokens[current], "|", strlen(tokens[current])) != 0)
-        {
-            parse[idx] = calloc(strlen(tokens[current]) + 10, sizeof(char));
-            strcpy(parse[idx], tokens[current]);
-            printf("%s ", parse[current]);
-            current++;
-            idx++;
-        }else break;
-    }
-    parse[idx] = calloc(100, sizeof(char)); parse[idx] = NULL;
 
-    current++;
-    idx = 0;
-    char** parse2 = calloc(10000, sizeof(char*));
-    while(current < nTokens) {
-        parse2[idx] = calloc(strlen(tokens[current]) + 10, sizeof(char));
-        strcpy(parse2[idx], tokens[current]);
-        printf("%s ", parse2[idx]);
-        current++;idx++;
-    }
-    parse2[idx] = calloc(100, sizeof(char)); parse2[idx] = NULL;
-
-
-
-    current = 0;
-    if (strcmp(tokens[current], "exit") == 0){
-        exit(0);
-    }
-    if(pipe(pipefds) == -1) {
-        perror("Pipe failed");
-        exit(1);
-    }
-
-    int pid = fork();
-    if (pid < 0)
-    {
-        perror("fork");
-        exit(-1);
-    }
-    if (pid == 0)
-    {
-        //child process
-        close(STDOUT_FILENO);  //closing stdout
-        dup(pipefds[1]);         //replacing stdout with pipe write
-        close(pipefds[0]);       //closing pipe read
-        close(pipefds[1]);
-
-        execvp(parse[0], parse);
-        perror("execvp of ls failed");
-        exit(1);
-    }
-    int pid2 = fork();
-    if (pid2 == 0)
-    {
-        close(STDIN_FILENO);   //closing stdin
-        dup(pipefds[0]);         //replacing stdin with pipe read
-        close(pipefds[1]);       //closing pipe write
-        close(pipefds[0]);
-
-        execvp(parse2[0],parse2);
-        perror("execvp of wc failed");
-        exit(1);
-    }
     else{
         //parent process, waiting for a child to finish
 
@@ -244,10 +188,7 @@ int execFullCommandLine(
             printf("Child(<%d>) crashed!\n", child_exit_pid);
         }
 
-    }
-    current++;
-
-    //}*/
+    }*/
 	return 1;
 }
 

@@ -1,6 +1,7 @@
 #ifndef __DISH_RUN_SCRIPT_HEADER__
 #define __DISH_RUN_SCRIPT_HEADER__
 
+
 int runScript(FILE *ofp, FILE *pfp, FILE *ifp, const char *filename, int verbosity);
 int runScriptFile(FILE *ofp, FILE *pfp, const char *filename, int verbosity);
 

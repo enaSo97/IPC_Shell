@@ -4,7 +4,6 @@
 #include <errno.h>
 #include <unistd.h>
 #include <wait.h>
-#include <tclInt.h>
 
 #include "dish_run.h"
 #include "dish_tokenize.h"
@@ -24,11 +23,23 @@ static void prompt(FILE *pfp, FILE *ifp)
  * Actually do the work
  */
 
-typedef struct {
-    char** arg;
-    Command* next;
-} Command;
+void delete_element(char ** tokens, int nTokens)
+{
+    int i = 0;
+    for (i = 0; i < nTokens -1; i++)
+    {
+        //tokens[i] = realloc(sizeof(char*), strlen(tokens[i+1]));
+        strncpy(tokens[i], tokens[i+1], strlen(tokens[i+1]));
+        printf("new %s\n", tokens[i]);
+    }
+    tokens[i] = NULL;
+    for (int j = 0; j < i; j++)
+    {
+        printf("erased: %s\n", tokens[j]);
+    }
 
+    //tokens[i] = NULL;
+}
 
 int count_pipe(char ** tokens, int nTokens)
 {
@@ -42,29 +53,7 @@ int count_pipe(char ** tokens, int nTokens)
     }
     return pipes;
 }
-
-Command * parse_commandln(char** tokens, int nTokens)
-{
-    int num_command = count_pipe(tokens, nTokens) + 1;
-    Command command[num_command];
-    int i = 0, com_ct = 0;
-    while(i < nTokens)
-    {
-        if (strncmp(tokens[i], "|", strlen(tokens[i])) != 0)
-        {
-            command[com_ct]->arg[i] = realloc(sizeof(char), strlen(tokens[i]));
-            strncpy(command->arg[i], tokens[i], strlen(tokens[i]));
-
-        } else{
-            com_ct++;
-            command->next = command[com_ct];
-        }
-        i++;
-    }
-
-    return command;
-}
-
+int current = 0;
 int execFullCommandLine(
 		FILE *ofp,
 		char ** const tokens,
@@ -75,11 +64,103 @@ int execFullCommandLine(
 		fprintf(stderr, " + ");
 		fprintfTokens(stderr, tokens, 1);
 	}
-    int pipefds[2];
-	/** Now actually do something with this command, or command set */
-    /** Now actually do something with this command, or command set */
-    int pipe_nums = count_pipe(tokens, nTokens);
 
+    int nPipes = count_pipe(tokens, nTokens);
+    int pipefds[2*nPipes];
+    for (int i = 0; i < nPipes; i++)
+    {
+        if (pipe(pipefds + i*2) < 0)
+        {
+            perror("pipe"); exit(1);
+        }
+    }
+    int num_cmd = 0;
+    char **parse= calloc(10000, sizeof(char*));
+    int idx = 0, command = 0, j = 0;
+    while(current < nTokens) {
+        if (strncmp(tokens[current], "|", strlen(tokens[current])) != 0) {
+            parse[idx] = calloc(strlen(tokens[current]) + 10, sizeof(char));
+            strcpy(parse[idx], tokens[current]);
+            printf("|%s| ", parse[idx]);
+            current++;
+            printf("\n");
+            parse[current] = calloc(100, sizeof(char));
+            parse[idx] = NULL;
+        }else{
+            int pid = fork();
+            if (pid == 0)
+            {
+                if (command > 0)
+                {
+                    //not first command
+                    if (dup2(pipefds[j -2], 0) < 0)
+                    {
+                        perror("dup2"); exit(1);
+                    }
+
+                }
+                if (command < nPipes-1)
+                {
+                    //not last command
+                    if (dup2(pipefds[j +1],1) < 0)
+                    {
+                        perror("dup2"); exit(1);
+                    }
+                }
+                for (int i = 0; i < nPipes*2; i++)
+                {
+                    close(pipefds[i]);
+                }
+                if (execvp(parse[0], parse) < 0)
+                {
+                    perror("execvp"); exit(1);
+                }
+            }
+            else if (pid < 0){
+                perror("error");
+                exit(1);
+            }
+            for (int i = 0; i < idx; i++){
+                free(parse[i]);
+            }
+            j +=2;command++;
+        }
+        current++; idx++;
+    }
+    for (int i = 0; i < nPipes *2; i++)
+    {
+        close(pipefds[i]);
+    }
+    for (int i = 0; i < nPipes; i++)
+    {
+        wait(NULL);
+    }
+
+
+    /*
+        char ** parsedTokens = NULL;
+        if(nPipes > 0) {
+            parsedTokens = malloc(sizeof(char*) * (nTokens - nPipes));
+            int i = 0;
+            int j = 0;
+            int pipeToken = 1;
+            while(i < nTokens) {
+                //printf("Token[%d] = %s\n", i, tokens[i]);
+                if(strcmp(tokens[i], "|") != 0) {
+                    parsedTokens[j] = malloc(sizeof(char) * strlen(tokens[i] + 1));
+                    strcpy(parsedTokens[j], tokens[i]);
+                    parsedTokens[j][strlen(parsedTokens[j])] = '\0';
+                    j++;
+                }
+                i++;
+            }
+            for(int i=0;i<(nTokens - nPipes); i++) {
+                printf("%s \n", parsedTokens[i]);
+            }
+            printf("\n");
+        }*/
+
+/*
     int status, child_exit_pid, current = 0, idx = 0;
     char **parse= calloc(10000, sizeof(char*));
     while(current < nTokens) {
@@ -166,7 +247,7 @@ int execFullCommandLine(
     }
     current++;
 
-    //}
+    //}*/
 	return 1;
 }
 

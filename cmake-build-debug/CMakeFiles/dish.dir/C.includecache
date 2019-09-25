@@ -6,20 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/bb2/IPC_Shell/dish_main.c
-stdio.h
--
-unistd.h
--
-stdlib.h
--
-string.h
--
-errno.h
--
-dish_run.h
-/home/bb2/IPC_Shell/dish_run.h
-
 /home/bb2/IPC_Shell/dish_run.c
 stdio.h
 -
@@ -39,22 +25,6 @@ dish_tokenize.h
 /home/bb2/IPC_Shell/dish_tokenize.h
 
 /home/bb2/IPC_Shell/dish_run.h
-
-/home/bb2/IPC_Shell/dish_tokenize.c
-stdio.h
--
-stdlib.h
--
-string.h
--
-errno.h
--
-ctype.h
--
-assert.h
--
-dish_tokenize.h
-/home/bb2/IPC_Shell/dish_tokenize.h
 
 /home/bb2/IPC_Shell/dish_tokenize.h
 

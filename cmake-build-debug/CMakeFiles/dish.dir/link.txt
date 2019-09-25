@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/dish.dir/dish_main.c.o CMakeFiles/dish.dir/dish_run.c.o CMakeFiles/dish.dir/dish_tokenize.c.o  -o dish 

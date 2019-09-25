@@ -1,0 +1,3 @@
+/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/CMakeFiles/dish.dir
+/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/CMakeFiles/edit_cache.dir

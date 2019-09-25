@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/bb2/System_Programming/IPC_Shell/dish_main.c
+/home/bb2/IPC_Shell/dish_main.c
 stdio.h
 -
 unistd.h
@@ -18,9 +18,9 @@ string.h
 errno.h
 -
 dish_run.h
-/home/bb2/System_Programming/IPC_Shell/dish_run.h
+/home/bb2/IPC_Shell/dish_run.h
 
-/home/bb2/System_Programming/IPC_Shell/dish_run.c
+/home/bb2/IPC_Shell/dish_run.c
 stdio.h
 -
 stdlib.h
@@ -34,13 +34,13 @@ unistd.h
 wait.h
 -
 dish_run.h
-/home/bb2/System_Programming/IPC_Shell/dish_run.h
+/home/bb2/IPC_Shell/dish_run.h
 dish_tokenize.h
-/home/bb2/System_Programming/IPC_Shell/dish_tokenize.h
+/home/bb2/IPC_Shell/dish_tokenize.h
 
-/home/bb2/System_Programming/IPC_Shell/dish_run.h
+/home/bb2/IPC_Shell/dish_run.h
 
-/home/bb2/System_Programming/IPC_Shell/dish_tokenize.c
+/home/bb2/IPC_Shell/dish_tokenize.c
 stdio.h
 -
 stdlib.h
@@ -54,7 +54,7 @@ ctype.h
 assert.h
 -
 dish_tokenize.h
-/home/bb2/System_Programming/IPC_Shell/dish_tokenize.h
+/home/bb2/IPC_Shell/dish_tokenize.h
 
-/home/bb2/System_Programming/IPC_Shell/dish_tokenize.h
+/home/bb2/IPC_Shell/dish_tokenize.h
 

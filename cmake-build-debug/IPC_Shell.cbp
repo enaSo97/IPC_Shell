@@ -8,28 +8,28 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/bb2/System_Programming/IPC_Shell/cmake-build-debug"/>
+				<Option working_dir="/home/bb2/IPC_Shell/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/bb2/System_Programming/IPC_Shell/cmake-build-debug"/>
+				<Option working_dir="/home/bb2/IPC_Shell/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="dish">
-				<Option output="/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/dish" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/bb2/System_Programming/IPC_Shell/cmake-build-debug"/>
+				<Option output="/home/bb2/IPC_Shell/cmake-build-debug/dish" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/bb2/IPC_Shell/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -43,15 +43,15 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 dish"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 dish"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="dish/fast">
-				<Option output="/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/dish" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/bb2/System_Programming/IPC_Shell/cmake-build-debug"/>
+				<Option output="/home/bb2/IPC_Shell/cmake-build-debug/dish" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/bb2/IPC_Shell/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -65,39 +65,39 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 dish/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 dish/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/bb2/System_Programming/IPC_Shell/cmake-build-debug"/>
+				<Option working_dir="/home/bb2/IPC_Shell/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/System_Programming/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/bb2/IPC_Shell/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/bb2/System_Programming/IPC_Shell/dish_main.c">
+		<Unit filename="/home/bb2/IPC_Shell/dish_main.c">
 			<Option target="dish"/>
 		</Unit>
-		<Unit filename="/home/bb2/System_Programming/IPC_Shell/dish_run.c">
+		<Unit filename="/home/bb2/IPC_Shell/dish_run.c">
 			<Option target="dish"/>
 		</Unit>
-		<Unit filename="/home/bb2/System_Programming/IPC_Shell/dish_run.h">
+		<Unit filename="/home/bb2/IPC_Shell/dish_run.h">
 			<Option target="dish"/>
 		</Unit>
-		<Unit filename="/home/bb2/System_Programming/IPC_Shell/dish_tokenize.c">
+		<Unit filename="/home/bb2/IPC_Shell/dish_tokenize.c">
 			<Option target="dish"/>
 		</Unit>
-		<Unit filename="/home/bb2/System_Programming/IPC_Shell/dish_tokenize.h">
+		<Unit filename="/home/bb2/IPC_Shell/dish_tokenize.h">
 			<Option target="dish"/>
 		</Unit>
-		<Unit filename="/home/bb2/System_Programming/IPC_Shell/CMakeLists.txt">
+		<Unit filename="/home/bb2/IPC_Shell/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

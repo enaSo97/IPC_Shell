@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <wait.h>
+#include <tclInt.h>
 
 #include "dish_run.h"
 #include "dish_tokenize.h"
@@ -23,6 +24,12 @@ static void prompt(FILE *pfp, FILE *ifp)
  * Actually do the work
  */
 
+typedef struct {
+    char** arg;
+    Command* next;
+} Command;
+
+
 int count_pipe(char ** tokens, int nTokens)
 {
     int pipes = 0;
@@ -35,6 +42,29 @@ int count_pipe(char ** tokens, int nTokens)
     }
     return pipes;
 }
+
+Command * parse_commandln(char** tokens, int nTokens)
+{
+    int num_command = count_pipe(tokens, nTokens) + 1;
+    Command command[num_command];
+    int i = 0, com_ct = 0;
+    while(i < nTokens)
+    {
+        if (strncmp(tokens[i], "|", strlen(tokens[i])) != 0)
+        {
+            command[com_ct]->arg[i] = realloc(sizeof(char), strlen(tokens[i]));
+            strncpy(command->arg[i], tokens[i], strlen(tokens[i]));
+
+        } else{
+            com_ct++;
+            command->next = command[com_ct];
+        }
+        i++;
+    }
+
+    return command;
+}
+
 int execFullCommandLine(
 		FILE *ofp,
 		char ** const tokens,

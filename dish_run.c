@@ -32,13 +32,13 @@ void print(char** tokens)
     printf("\n");
 }
 
-char ** parse_command(char**tokens, int nTokens, int curr_cmd_num)
+char ** parse_command(char**tokens, int nTokens, int curr_cmd_num, char * toParse)
 {
     int cmd_cnt = 0, idx = 0;
     char** parsed_cmd = calloc(sizeof(*parsed_cmd), 18);
     for (int i = 0; i < nTokens; i++)
     {
-        if (strncmp(tokens[i], "|", strlen(tokens[i])) != 0)
+        if (strncmp(tokens[i], toParse, strlen(tokens[i])) != 0)
         {
             parsed_cmd[idx] = calloc(sizeof(char), strlen(tokens[i]));
             strncpy(parsed_cmd[idx], tokens[i], strlen(tokens[i]));
@@ -53,7 +53,7 @@ char ** parse_command(char**tokens, int nTokens, int curr_cmd_num)
             {
                 break;
             }else{
-                for(int j = 0; j < idx; j++)
+                for(int j = 0; j <= idx; j++)
                 {
                     free(parsed_cmd[j]);
                 }
@@ -79,6 +79,7 @@ int count_pipe(char ** tokens, int nTokens)
 }
 int execFullCommandLine(
 		FILE *ofp,
+        FILE *ifp,
 		char ** const tokens,
 		int nTokens,
 		int verbosity)
@@ -87,8 +88,6 @@ int execFullCommandLine(
 		fprintf(stderr, " + ");
 		fprintfTokens(stderr, tokens, 1);
 	}
-    printf("command : ");
-	print(tokens);
     if (strcmp(tokens[0], "exit") == 0){
         exit(0);
     }
@@ -101,12 +100,39 @@ int execFullCommandLine(
         }else{
             printf("%s\n", pwd);
         }
+        free(pwd);
     }
     if (strcmp(tokens[0], "cd") == 0)
     {
-        chdir(getenv("HOME"));
+        if (nTokens > 1){
+            chdir(tokens[1]);
+        }else{
+            chdir(getenv("HOME"));
+        }
+
 
     }else{
+        if (strcmp(tokens[nTokens - 1], "&") == 0)//if the last token is & then run background process
+        {
+            tokens[nTokens - 1] = 0; nTokens -= 1;
+            int pid = fork();
+
+            if(pid == 0)
+            {
+                int grand_nTokens;
+                char *bg_tokens[MAXTOKENS];
+                char linebuf[LINEBUFFERSIZE];
+                printf("running background process\n");
+                grand_nTokens = parseLine(ifp, bg_tokens, MAXTOKENS, linebuf, LINEBUFFERSIZE, verbosity - 3);
+                execFullCommandLine(ofp, ifp, bg_tokens, grand_nTokens, verbosity);
+            }
+            if (pid < 0)
+            {
+                perror("background fork");
+                exit(1);
+            }
+            wait(NULL);
+        }
         int nPipes = count_pipe(tokens, nTokens);
         int pipefds[2*nPipes];
         for (int i = 0; i < nPipes; i++)
@@ -118,26 +144,31 @@ int execFullCommandLine(
         }
         int idx = 0, j = 0, current = 0;
         while(current < nPipes+1) {
-            char ** command = parse_command(tokens, nTokens, current+1);
+            char ** command = parse_command(tokens, nTokens, current+1, "|");
             print(command);
             int pid = fork();
+            if (pid < 0){
+                perror("error");
+                exit(1);
+            }
             if (pid == 0){
-                if (current > 0)
-                {
-                    //not first command
-                    if (dup2(pipefds[j -2], 0) < 0)
-                    {
-                        perror("dup2"); exit(1);
-                    }
-                }
-                if (current < nPipes-1)
+                if (current < nPipes)
                 {
                     //not last command
-                    if (dup2(pipefds[j +1],1) < 0)
+                    if (dup2(pipefds[j + 1],1) < 0)
                     {
                         perror("dup2"); exit(1);
                     }
                 }
+                if (current > 0)
+                {
+                    //not first command,
+                    if (dup2(pipefds[j - 2], 0) < 0)
+                    {
+                        perror("dup2"); exit(1);
+                    }
+                }
+
                 for (int i = 0; i < nPipes*2; i++)
                 {
                     close(pipefds[i]);
@@ -146,27 +177,28 @@ int execFullCommandLine(
                 {
                     perror("execvp"); exit(1);
                 }
+                for (int k = 0; command[k] != NULL; k++){
+                    free(command[k]);
+                }
+                free(command);
             }
-            else if (pid < 0){
-                perror("error");
-                exit(1);
-            }
-            for (int i = 0; command[i] != NULL; i++){
+            for (int i = 0; command[i] == NULL; i++){
                 free(command[i]);
             }
             j +=2;
             current++;
         }
 
-        for (int i = 0; i < nPipes *2; i++)
+        for (int i = 0; i < 2*nPipes; i++)
         {
             close(pipefds[i]);
         }
-        for (int i = 0; i < nPipes; i++)
+        for (int i = 0; i < nPipes+1; i++)
         {
             wait(NULL);
         }
     }
+
 
 
 /*
@@ -207,7 +239,7 @@ runScript(
 	int nTokens, executeStatus = 0;
 
 	fprintf(stderr, "SHELL PID %ld\n", (long) getpid());
-
+    printf("%s\n", filename);
 	prompt(pfp, ifp);
 	while ((nTokens = parseLine(ifp,
 				tokens, MAXTOKENS,
@@ -216,7 +248,7 @@ runScript(
 
 		if (nTokens > 0) {
 
-			executeStatus = execFullCommandLine(ofp, tokens, nTokens, verbosity);
+			executeStatus = execFullCommandLine(ofp, ifp, tokens, nTokens, verbosity);
 
 			if (executeStatus < 0) {
 				fprintf(stderr, "Failure executing '%s' line %d:\n    ",

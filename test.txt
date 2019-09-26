@@ -1,0 +1,15 @@
+total 116
+drwxr-xr-x 3 bb2 bb2  4096 Sep 25 16:15 cmake-build-debug
+-rw-r--r-- 1 bb2 bb2   217 Sep 25 03:42 CMakeLists.txt
+-rwxr-xr-x 1 bb2 bb2 34640 Sep 25 16:39 dish
+-rw-rw-r-- 1 bb2 bb2  1369 Aug 22 14:13 dish_main.c
+-rw-r--r-- 1 bb2 bb2  7728 Sep 25 03:45 dish_main.o
+-rw-r--r-- 1 bb2 bb2  6003 Sep 25 16:39 dish_run.c
+-rw-r--r-- 1 bb2 bb2   407 Sep 25 00:43 dish_run.h
+-rw-r--r-- 1 bb2 bb2 14392 Sep 25 16:39 dish_run.o
+-rw-rw-r-- 1 bb2 bb2  6798 Sep  4 17:25 dish_tokenize.c
+-rw-rw-r-- 1 bb2 bb2   649 Sep  4 17:22 dish_tokenize.h
+-rw-r--r-- 1 bb2 bb2 12928 Sep 25 03:45 dish_tokenize.o
+-rw-rw-r-- 1 bb2 bb2   609 Jun 22 06:23 makefile
+-rw-r--r-- 1 bb2 bb2     0 Sep 24 20:08 README.md
+-rw-r--r-- 1 bb2 bb2     0 Sep 25 17:24 test.txt

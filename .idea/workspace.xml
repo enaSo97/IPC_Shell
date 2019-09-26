@@ -15,7 +15,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/dish.dir/dish_run.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/dish.dir/dish_run.c.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/dish" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/dish" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dish" beforeDir="false" afterPath="$PROJECT_DIR$/dish" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dish_run.c" beforeDir="false" afterPath="$PROJECT_DIR$/dish_run.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dish_run.o" beforeDir="false" afterPath="$PROJECT_DIR$/dish_run.o" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,6 +32,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="OCFindUsagesOptions" text="false" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectConfigurationFiles">
     <option name="files">
       <list>
@@ -82,7 +85,8 @@
       <option name="presentableId" value="Default" />
       <updated>1569379228576</updated>
       <workItem from="1569379230166" duration="16134000" />
-      <workItem from="1569416510452" duration="1571000" />
+      <workItem from="1569416510452" duration="3548000" />
+      <workItem from="1569439952251" duration="15886000" />
     </task>
     <servers />
   </component>
@@ -101,5 +105,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/dish_run.c</url>
+          <line>116</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

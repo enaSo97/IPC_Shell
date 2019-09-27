@@ -55,29 +55,28 @@ void print(char** tokens)
 char ** parse_command(char**tokens, int nTokens, int curr_cmd_num, char * toParse)
 {
     int cmd_cnt = 0, idx = 0;
-    char** parsed_cmd = calloc(sizeof(*parsed_cmd), 18);
+    char** parsed_cmd = calloc(sizeof(char *), 18);
     for (int i = 0; i < nTokens; i++)
     {
-        if (strncmp(tokens[i], toParse, strlen(tokens[i])) != 0)
+        if (tokens[i] != NULL || strcmp(tokens[i], "") != 0)
         {
-            parsed_cmd[idx] = calloc(sizeof(char), strlen(tokens[i]));
-            strncpy(parsed_cmd[idx], tokens[i], strlen(tokens[i]));
-            idx++;
-            parsed_cmd[idx] = realloc(parsed_cmd[idx], sizeof(char)*10);
-            parsed_cmd[idx] = NULL;
-        }
-        else if (strncmp(tokens[i], "|", strlen(tokens[i])) == 0 || tokens[i+1] == NULL)
-        {
-            cmd_cnt++;
-            if (cmd_cnt == curr_cmd_num)
+            if (strcmp(tokens[i], toParse) != 0)
             {
-                break;
-            }else{
-                for(int j = 0; j <= idx; j++)
+                parsed_cmd[idx] = calloc(sizeof(char*), strlen(tokens[i])+1);
+                strncpy(parsed_cmd[idx], tokens[i], strlen(tokens[i]));
+                idx++;
+                parsed_cmd[idx] = realloc(parsed_cmd[idx], sizeof(char)*10);
+                parsed_cmd[idx] = NULL;
+            }
+            else if (strncmp(tokens[i], "|", strlen(tokens[i])) == 0 || tokens[i+1] == NULL)
+            {
+                cmd_cnt++;
+                if (cmd_cnt == curr_cmd_num)
                 {
-                    free(parsed_cmd[j]);
+                    break;
+                }else{
+                    idx = 0;
                 }
-                idx = 0;
             }
         }
 
@@ -124,19 +123,29 @@ int execFullCommandLine(
     }
     if (strcmp(tokens[0], "cd") == 0)
     {
+        if(tokens[1][0] == '~'){
+            char * home_path = getenv("HOME");
+            char * token = strtok(tokens[1], "~");
+            strcat(home_path, token);
+            printf("%s\n", home_path);
+            chdir(home_path);
+        }
         if (nTokens > 1){
+            printf("%s\n", tokens[1]);
             chdir(tokens[1]);
-        }else{
+        }
+        else{
+            printf("%s", getenv("HOME"));
             chdir(getenv("HOME"));
         }
     }
     else{
         char** new_tokens = NULL;
-        int new_arr_sz = 0;
+        int new_arr_sz = 0, pid;
         if (strcmp(tokens[nTokens - 1], "&") == 0)//if the last token is & then run background process
         {
             tokens[nTokens - 1] = 0; nTokens -= 1;
-            int pid = fork();
+            pid = fork();
 
             if(pid == 0)
             {
@@ -152,7 +161,20 @@ int execFullCommandLine(
                 perror("background fork");
                 exit(1);
             }
-            wait(NULL);
+            int status;
+            int child_exit_pid = waitpid(pid, &status, 0);
+
+            if (WIFEXITED(status))
+            {
+                if (WEXITSTATUS(status) == 0)
+                {
+                    printf("Child(<%d>) exited -- Success (<%d>)\n", child_exit_pid, status);
+                }else{
+                    printf("Child(<%d>) exited -- Failed (<%d>)\n", child_exit_pid, status);
+                }
+            }else{
+                printf("Child(<%d>) crashed!\n", child_exit_pid);
+            }
         }
         int m = 0;
         for (int i = 0; i < nTokens; i++)
@@ -162,31 +184,30 @@ int execFullCommandLine(
             {
                 new_arr_sz++;
                 new_tokens = realloc(new_tokens, new_arr_sz* sizeof(char*));
-                new_tokens[m] = malloc(sizeof(char)*strlen(tokens[m]));
-                strcpy(new_tokens[m], tokens[m]);
+                new_tokens[m] = calloc(sizeof(char), strlen(tokens[m])+1);
+                strncpy(new_tokens[m], tokens[m], strlen(tokens[m]));
                 m++;
 
             }
             else if (need_globbing(tokens[i]) == 1)
             {
                 glob_t g;
-
-                printf("found the wild card\n");
+                //printf("found the wild card\n");
                 if (glob(tokens[i], 0, NULL, &g) < 0) {
                     printf("Error listing\n");
                     exit(1);
                 }
                 new_arr_sz += g.gl_pathc;
-                printf("new arr sz: %d\n", new_arr_sz);
+                //printf("new arr sz: %d\n", new_arr_sz);
                 new_tokens = realloc(new_tokens, sizeof(char*)*new_arr_sz);
                 for (m = m; m < new_arr_sz; m++)
                 {
-                    printf("globbing index %d\n", i);
+                    //printf("globbing index %d\n", i);
 
                     for(int k = 0; k < g.gl_pathc; k++)
                     {
-                        new_tokens[m] = malloc(sizeof(char)*strlen(g.gl_pathv[k]));
-                        strcpy(new_tokens[m], g.gl_pathv[k]);
+                        new_tokens[m] = calloc(sizeof(char),strlen(g.gl_pathv[k])+1);
+                        strncpy(new_tokens[m], g.gl_pathv[k], strlen(g.gl_pathv[k]));
                         m++;
                     }m--;
 
@@ -195,8 +216,8 @@ int execFullCommandLine(
             }else{
                 new_arr_sz++;
                 new_tokens = realloc(new_tokens, new_arr_sz*sizeof(char*));
-                new_tokens[m] = malloc(sizeof(char)*strlen(tokens[i]));
-                strcpy(new_tokens[m], tokens[i]);
+                new_tokens[m] = calloc(sizeof(char), strlen(tokens[i])+1);
+                strncpy(new_tokens[m], tokens[i], strlen(tokens[i]));
                 m++;
             }
         }
@@ -210,24 +231,20 @@ int execFullCommandLine(
                 perror("pipe"); exit(1);
             }
         }
-        int idx = 0, j = 0, current = 0;
+        int j = 0, current = 0, main_pid = 0;
         while(current < nPipes+1) {
             char** command = NULL;
             if (new_tokens != NULL)
             {
-                printf("arr size %d\n", new_arr_sz);
                 command = parse_command(new_tokens, new_arr_sz, current+1, "|");
-                print(command);
             }
 
-            //print(command);
-
-            int pid = fork();
-            if (pid < 0){
+            main_pid = fork();
+            if (main_pid < 0){
                 perror("error");
                 exit(1);
             }
-            if (pid == 0){
+            if (main_pid == 0){
                 if (current < nPipes)
                 {
                     //not last command
@@ -271,32 +288,22 @@ int execFullCommandLine(
         }
         for (int i = 0; i < nPipes+1; i++)
         {
-            wait(NULL);
+            int status = 0;
+            int child_exit_pid = waitpid(main_pid, &status, 0);
+
+            if (WIFEXITED(status))
+            {
+                if (WEXITSTATUS(status) == 0)
+                {
+                    printf("Child(<%d>) exited -- Success (<%d>)\n", child_exit_pid, status);
+                }else{
+                    printf("Child(<%d>) exited -- Failed (<%d>)\n", child_exit_pid, status);
+                }
+            }else{
+                printf("Child(<%d>) crashed!\n", child_exit_pid);
+            }
         }
     }
-
-
-
-/*
-
-    else{
-        //parent process, waiting for a child to finish
-
-        child_exit_pid = waitpid(pid, &status, 0);
-
-        if (WIFEXITED(status))
-        {
-            if (WEXITSTATUS(status) == 0)
-            {
-                printf("Child(<%d>) exited -- Success (<%d>)\n", child_exit_pid, status);
-            }else{
-                printf("Child(<%d>) exited -- Failed (<%d>)\n", child_exit_pid, status);
-            }
-        }else{
-            printf("Child(<%d>) crashed!\n", child_exit_pid);
-        }
-
-    }*/
 	return 1;
 }
 
@@ -315,11 +322,11 @@ runScript(
 	int nTokens, executeStatus = 0;
 
 	fprintf(stderr, "SHELL PID %ld\n", (long) getpid());
-    printf("%s\n", filename);
 	prompt(pfp, ifp);
 	while ((nTokens = parseLine(ifp,
 				tokens, MAXTOKENS,
 				linebuf, LINEBUFFERSIZE, verbosity - 3)) > 0) {
+	    //printf("in while\n");
 		lineNo++;
 
 		if (nTokens > 0) {

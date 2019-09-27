@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include "dish_run.h"
+in while
+Child(<2259>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)

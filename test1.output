@@ -1,0 +1,47 @@
+dish_main.c
+dish_run.c
+dish_tokenize.c
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include "dish_run.h"
+-rw-r--r-- 1 bb2 bb2 9908 Sep 27 13:58 dish_run.c
+-rw-rw-r-- 1 bb2 bb2 1369 Aug 22 14:13 dish_main.c
+-rw-rw-r-- 1 bb2 bb2 6798 Sep  4 17:25 dish_tokenize.c
+Hello World!
+dish_main.c
+dish_run.h
+dish_tokenize.h
+in while
+found the wild card
+new arr sz: 4
+globbing index 1
+Child(<2804>) exited -- Success (<0>)
+in while
+Child(<2806>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)
+in while
+found the wild card
+new arr sz: 5
+globbing index 2
+Child(<2809>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)
+in while
+found the wild card
+new arr sz: 3
+globbing index 1
+Child(<2813>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)
+in while
+Child(<2815>) exited -- Success (<0>)
+Child(<-1>) exited -- Success (<0>)
+in while
+found the wild card
+new arr sz: 3
+globbing index 1
+Child(<2816>) exited -- Success (<0>)

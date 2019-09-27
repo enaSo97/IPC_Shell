@@ -1,4 +1,3 @@
-cmake-build-debug
 dish_main.c
 dish_run.c
 dish_tokenize.c

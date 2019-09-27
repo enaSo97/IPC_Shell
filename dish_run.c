@@ -4,7 +4,6 @@
 #include <errno.h>
 #include <unistd.h>
 #include <wait.h>
-#include <f2fs_fs.h>
 #include <glob.h>
 
 #include "dish_run.h"

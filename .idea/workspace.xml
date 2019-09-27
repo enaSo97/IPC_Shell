@@ -12,21 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e9b6aab8-b11a-42b6-9109-d96ae9172310" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/cmd/test1.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/test2.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/test3.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/test4.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/test5.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/test6.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/test7.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/dish.dir/dish_run.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/dish.dir/dish_run.c.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/dish" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/dish" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dish" beforeDir="false" afterPath="$PROJECT_DIR$/dish" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dish_run.c" beforeDir="false" afterPath="$PROJECT_DIR$/dish_run.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dish_run.o" beforeDir="false" afterPath="$PROJECT_DIR$/dish_run.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/makefile" beforeDir="false" afterPath="$PROJECT_DIR$/makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -85,7 +71,7 @@
       <updated>1569379228576</updated>
       <workItem from="1569379230166" duration="16134000" />
       <workItem from="1569416510452" duration="3548000" />
-      <workItem from="1569439952251" duration="66829000" />
+      <workItem from="1569439952251" duration="67402000" />
     </task>
     <servers />
   </component>

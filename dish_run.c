@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <wait.h>
 #include <glob.h>
-
 #include "dish_run.h"
 #include "dish_tokenize.h"
 

@@ -11,9 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9b6aab8-b11a-42b6-9109-d96ae9172310" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="e9b6aab8-b11a-42b6-9109-d96ae9172310" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +69,7 @@
       <updated>1569379228576</updated>
       <workItem from="1569379230166" duration="16134000" />
       <workItem from="1569416510452" duration="3548000" />
-      <workItem from="1569439952251" duration="67402000" />
+      <workItem from="1569439952251" duration="67756000" />
     </task>
     <servers />
   </component>
@@ -96,7 +94,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/dish_run.c</url>
-          <line>179</line>
+          <line>178</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>

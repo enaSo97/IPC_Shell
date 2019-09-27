@@ -4,6 +4,8 @@
 #include <errno.h>
 #include <unistd.h>
 #include <wait.h>
+#include <f2fs_fs.h>
+#include <glob.h>
 
 #include "dish_run.h"
 #include "dish_tokenize.h"
@@ -22,6 +24,26 @@ static void prompt(FILE *pfp, FILE *ifp)
 /**
  * Actually do the work
  */
+
+int need_globbing(char** toBeCompared, int nTokens)
+{
+    int need = 0; //false
+    char *POSIX[6] = {"?", "*", "[", "[!", "{", "\\"};
+    for (int j = 0; j < nTokens; j++)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            if(strstr(toBeCompared[j], POSIX[i]) != NULL)
+            {
+                need = i;//true
+            }
+        }
+    }
+
+    return need;
+}
+
+//void change(char** tokens, )
 
 void print(char** tokens)
 {
@@ -43,7 +65,7 @@ char ** parse_command(char**tokens, int nTokens, int curr_cmd_num, char * toPars
             parsed_cmd[idx] = calloc(sizeof(char), strlen(tokens[i]));
             strncpy(parsed_cmd[idx], tokens[i], strlen(tokens[i]));
             idx++;
-            parsed_cmd[idx] = calloc(100, sizeof(char));
+            parsed_cmd[idx] = realloc(parsed_cmd[idx], sizeof(char)*10);
             parsed_cmd[idx] = NULL;
         }
         else if (strncmp(tokens[i], "|", strlen(tokens[i])) == 0 || tokens[i+1] == NULL)
@@ -109,9 +131,10 @@ int execFullCommandLine(
         }else{
             chdir(getenv("HOME"));
         }
-
-
-    }else{
+    }
+    else{
+        char** new_tokens = NULL;
+        int new_arr_sz = 0;
         if (strcmp(tokens[nTokens - 1], "&") == 0)//if the last token is & then run background process
         {
             tokens[nTokens - 1] = 0; nTokens -= 1;
@@ -133,6 +156,45 @@ int execFullCommandLine(
             }
             wait(NULL);
         }
+        //for (int i = 0; i < nTokens; i++)
+        //{
+            int glob_idx = need_globbing(tokens, nTokens);
+            if (glob_idx > 0)
+            {
+                glob_t g;
+
+                printf("found the wild card\n");
+                if (glob(tokens[nTokens - 1], 0, NULL, &g) < 0) {
+                    printf("Error listing\n");
+                    exit(1);
+                }
+                new_arr_sz = nTokens - 1 + g.gl_pathc;
+                new_tokens = realloc(new_tokens, sizeof(char*)*new_arr_sz);
+                for (int j = 0; j < new_arr_sz; j++)
+                {
+                    printf("globbing index %d\n", glob_idx);
+                    if (j != glob_idx)
+                    {//if it's not a globbing command
+                        new_tokens[j] = malloc(sizeof(char)*strlen(tokens[j]));
+                        strcpy(new_tokens[j], tokens[j]);
+                        //printf("||%s||\n", new_tokens[j]);
+                    }
+                    else if (j == glob_idx){
+                        printf("globbb");
+                        for(int k = 0; k < g.gl_pathc; k++)
+                        {
+                            new_tokens[j] = malloc(sizeof(char)*strlen(g.gl_pathv[k]));
+                            strcpy(new_tokens[j], g.gl_pathv[k]);
+                            j += 1;
+                            //printf("||%s||\n", new_tokens[j]);
+                        }
+                    }
+                }
+                //print(new_tokens);
+                //free(tokens);
+                globfree(&g);
+            }
+        //}
         int nPipes = count_pipe(tokens, nTokens);
         int pipefds[2*nPipes];
         for (int i = 0; i < nPipes; i++)
@@ -144,8 +206,18 @@ int execFullCommandLine(
         }
         int idx = 0, j = 0, current = 0;
         while(current < nPipes+1) {
-            char ** command = parse_command(tokens, nTokens, current+1, "|");
-            print(command);
+            char** command = NULL;
+            if (new_tokens != NULL)
+            {
+                printf("arr size %d\n", new_arr_sz);
+                command = parse_command(new_tokens, new_arr_sz, current+1, "|");
+            }else
+            {
+                command = parse_command(tokens, nTokens, current+1, "|");
+            }
+
+            //print(command);
+
             int pid = fork();
             if (pid < 0){
                 perror("error");

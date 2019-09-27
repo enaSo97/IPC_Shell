@@ -25,20 +25,18 @@ static void prompt(FILE *pfp, FILE *ifp)
  * Actually do the work
  */
 
-int need_globbing(char** toBeCompared, int nTokens)
+int need_globbing(char* toBeCompared)
 {
     int need = 0; //false
     char *POSIX[6] = {"?", "*", "[", "[!", "{", "\\"};
-    for (int j = 0; j < nTokens; j++)
-    {
+
         for (int i = 0; i < 6; i++)
         {
-            if(strstr(toBeCompared[j], POSIX[i]) != NULL)
+            if(strstr(toBeCompared, POSIX[i]) != NULL)
             {
                 need = i;//true
             }
         }
-    }
 
     return need;
 }
@@ -156,45 +154,53 @@ int execFullCommandLine(
             }
             wait(NULL);
         }
-        //for (int i = 0; i < nTokens; i++)
-        //{
-            int glob_idx = need_globbing(tokens, nTokens);
-            if (glob_idx > 0)
+        int m = 0;
+        for (int i = 0; i < nTokens; i++)
+        {
+            //int glob_idx = need_globbing(tokens, nTokens);
+            if (m == 0)
+            {
+                new_arr_sz++;
+                new_tokens = realloc(new_tokens, new_arr_sz* sizeof(char*));
+                new_tokens[m] = malloc(sizeof(char)*strlen(tokens[m]));
+                strcpy(new_tokens[m], tokens[m]);
+                m++;
+
+            }
+            else if (need_globbing(tokens[i]) == 1)
             {
                 glob_t g;
 
                 printf("found the wild card\n");
-                if (glob(tokens[nTokens - 1], 0, NULL, &g) < 0) {
+                if (glob(tokens[i], 0, NULL, &g) < 0) {
                     printf("Error listing\n");
                     exit(1);
                 }
-                new_arr_sz = nTokens - 1 + g.gl_pathc;
+                new_arr_sz += g.gl_pathc;
+                printf("new arr sz: %d\n", new_arr_sz);
                 new_tokens = realloc(new_tokens, sizeof(char*)*new_arr_sz);
-                for (int j = 0; j < new_arr_sz; j++)
+                for (m = m; m < new_arr_sz; m++)
                 {
-                    printf("globbing index %d\n", glob_idx);
-                    if (j != glob_idx)
-                    {//if it's not a globbing command
-                        new_tokens[j] = malloc(sizeof(char)*strlen(tokens[j]));
-                        strcpy(new_tokens[j], tokens[j]);
-                        //printf("||%s||\n", new_tokens[j]);
-                    }
-                    else if (j == glob_idx){
-                        printf("globbb");
-                        for(int k = 0; k < g.gl_pathc; k++)
-                        {
-                            new_tokens[j] = malloc(sizeof(char)*strlen(g.gl_pathv[k]));
-                            strcpy(new_tokens[j], g.gl_pathv[k]);
-                            j += 1;
-                            //printf("||%s||\n", new_tokens[j]);
-                        }
-                    }
+                    printf("globbing index %d\n", i);
+
+                    for(int k = 0; k < g.gl_pathc; k++)
+                    {
+                        new_tokens[m] = malloc(sizeof(char)*strlen(g.gl_pathv[k]));
+                        strcpy(new_tokens[m], g.gl_pathv[k]);
+                        m++;
+                    }m--;
+
                 }
-                //print(new_tokens);
-                //free(tokens);
                 globfree(&g);
+            }else{
+                new_arr_sz++;
+                new_tokens = realloc(new_tokens, new_arr_sz*sizeof(char*));
+                new_tokens[m] = malloc(sizeof(char)*strlen(tokens[i]));
+                strcpy(new_tokens[m], tokens[i]);
+                m++;
             }
-        //}
+        }
+
         int nPipes = count_pipe(tokens, nTokens);
         int pipefds[2*nPipes];
         for (int i = 0; i < nPipes; i++)
@@ -211,9 +217,7 @@ int execFullCommandLine(
             {
                 printf("arr size %d\n", new_arr_sz);
                 command = parse_command(new_tokens, new_arr_sz, current+1, "|");
-            }else
-            {
-                command = parse_command(tokens, nTokens, current+1, "|");
+                print(command);
             }
 
             //print(command);
